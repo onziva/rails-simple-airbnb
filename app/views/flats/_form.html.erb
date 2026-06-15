@@ -1,0 +1,39 @@
+<%= form_with model: @flat do |f| %>
+  <% if @flat.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(@flat.errors.count, "erreur") %> :</h2>
+      <ul>
+        <% @flat.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "Nom" %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div>
+    <%= f.label :description, "Description" %><br>
+    <%= f.text_area :description %>
+  </div>
+  <div>
+    <%= f.label :address, "Adresse" %><br>
+    <%= f.text_field :address %>
+  </div>
+  <div>
+    <%= f.label :price_by_night, "Prix par nuit (€)" %><br>
+    <%= f.number_field :price_by_night %>
+  </div>
+  <div>
+    <%= f.label :capacity, "Capacité" %><br>
+    <%= f.number_field :capacity %>
+  </div>
+  <div>
+    <%= f.label :user_id, "Hôte" %><br>
+    <%= f.collection_select :user_id, User.all, :id, :full_name, prompt: "Choisir un hôte" %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

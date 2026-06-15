@@ -1,0 +1,11 @@
+<p><%= link_to "← Retour aux logements", flats_path %></p>
+
+<h1><%= @flat.name %></h1>
+<p><strong><%= @flat.price_by_night %> €</strong> / nuit · <%= @flat.capacity %> voyageurs</p>
+<p><%= @flat.address %></p>
+<p>Hôte : <%= @flat.user.full_name %></p>
+<p><%= @flat.description %></p>
+
+<%= link_to "Modifier", edit_flat_path(@flat) %>
+<%= link_to "Supprimer", flat_path(@flat),
+      data: { turbo_method: :delete, turbo_confirm: "Supprimer ce logement ?" } %>

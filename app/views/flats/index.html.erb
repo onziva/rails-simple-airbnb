@@ -1,0 +1,25 @@
+<h1>Logements</h1>
+
+<%= form_with url: flats_path, method: :get do |f| %>
+  <%= f.text_field :query, value: params[:query], placeholder: "Nom ou ville" %>
+  <%= f.number_field :capacity, value: params[:capacity], placeholder: "Capacité min." %>
+  <%= f.number_field :max_price, value: params[:max_price], placeholder: "Prix max / nuit" %>
+  <%= f.submit "Rechercher" %>
+  <%= link_to "Réinitialiser", flats_path %>
+<% end %>
+
+<p><%= link_to "+ Ajouter un logement", new_flat_path %></p>
+
+<% if @flats.any? %>
+  <ul>
+    <% @flats.each do |flat| %>
+      <li>
+        <%= link_to flat.name, flat_path(flat) %>
+        — <%= flat.price_by_night %> €/nuit — <%= flat.capacity %> pers.
+        <br><small><%= flat.address %></small>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Aucun logement ne correspond à votre recherche.</p>
+<% end %>
