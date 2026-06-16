@@ -1,0 +1,40 @@
+<p><%= link_to "← Tous les utilisateurs", users_path %></p>
+
+<h1><%= @user.full_name %></h1>
+<p><%= @user.email %></p>
+
+<h2>Logements proposés (<%= @user.flats.count %>)</h2>
+<% if @user.flats.any? %>
+  <ul>
+    <% @user.flats.each do |flat| %>
+      <li><%= link_to flat.name, flat_path(flat) %> — <%= flat.price_by_night %> €/nuit</li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Aucun logement proposé.</p>
+<% end %>
+
+<h2>Réservations (<%= @user.bookings.count %>)</h2>
+<% if @user.bookings.any? %>
+  <ul>
+    <% @user.bookings.each do |booking| %>
+      <li><%= link_to booking.flat.name, booking_path(booking) %> —
+          du <%= booking.start_date.strftime("%d/%m/%Y") %>
+          au <%= booking.end_date.strftime("%d/%m/%Y") %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Aucune réservation.</p>
+<% end %>
+
+<h2>Avis laissés (<%= @user.reviews.count %>)</h2>
+<% if @user.reviews.any? %>
+  <ul>
+    <% @user.reviews.each do |review| %>
+      <li><strong><%= review.rating %>/5</strong> — <%= review.content %>
+          <em>(<%= review.flat.name %>)</em></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Aucun avis laissé.</p>
+<% end %>

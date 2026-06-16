@@ -1,11 +1,66 @@
-<p><%= link_to "← Retour aux logements", flats_path %></p>
+<p class="mb-3">
+  <%= link_to "← Retour aux logements", flats_path, class: "text-muted text-decoration-none" %>
+</p>
 
-<h1><%= @flat.name %></h1>
-<p><strong><%= @flat.price_by_night %> €</strong> / nuit · <%= @flat.capacity %> voyageurs</p>
-<p><%= @flat.address %></p>
-<p>Hôte : <%= @flat.user.full_name %></p>
-<p><%= @flat.description %></p>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <% if @flat.photo.attached? %>
+      <%= image_tag @flat.photo, class: "rounded shadow-sm flat-show__img" %>
+    <% else %>
+      <div class="flat-show__placeholder rounded d-flex align-items-center justify-content-center text-muted">
+        Pas de photo
+      </div>
+    <% end %>
+  </div>
 
-<%= link_to "Modifier", edit_flat_path(@flat) %>
-<%= link_to "Supprimer", flat_path(@flat),
-      data: { turbo_method: :delete, turbo_confirm: "Supprimer ce logement ?" } %>
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h3 mb-2"><%= @flat.name %></h1>
+        <p class="mb-3">
+          <span class="fs-4 fw-bold text-primary"><%= @flat.price_by_night %> €</span>
+          <span class="text-muted">/ nuit</span>
+        </p>
+
+        <ul class="list-unstyled mb-3">
+          <li class="mb-1">👥 <%= @flat.capacity %> voyageurs</li>
+          <li class="mb-1">📍 <%= @flat.address %></li>
+          <li class="mb-1">🧑 Hôte : <%= link_to @flat.user.full_name, user_path(@flat.user) %></li>
+        </ul>
+
+        <p class="text-secondary"><%= @flat.description %></p>
+
+        <%= link_to "Réserver ce logement", new_flat_booking_path(@flat),
+              class: "btn btn-primary w-100 mb-2" %>
+        <div class="d-flex gap-2">
+          <%= link_to "Modifier", edit_flat_path(@flat),
+                class: "btn btn-outline-secondary btn-sm flex-fill" %>
+          <%= link_to "Supprimer", flat_path(@flat),
+                class: "btn btn-outline-danger btn-sm flex-fill",
+                data: { turbo_method: :delete, turbo_confirm: "Supprimer ce logement ?" } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="my-5">
+
+<h2 class="h4 mb-3">Avis (<%= @flat.reviews.count %>)</h2>
+<% if @flat.reviews.any? %>
+  <div class="row row-cols-1 row-cols-md-2 g-3">
+    <% @flat.reviews.each do |review| %>
+      <div class="col">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <p class="mb-1 text-warning"><%= "★" * review.rating %><span class="text-muted">/5</span></p>
+            <p class="mb-2"><%= review.content %></p>
+            <p class="small text-muted mb-0">— <%= review.user.full_name %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-muted">Aucun avis pour ce logement.</p>
+<% end %>

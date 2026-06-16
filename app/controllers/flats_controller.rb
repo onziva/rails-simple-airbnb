@@ -14,6 +14,14 @@ class FlatsController < ApplicationController
 
     # Filtre : prix maximum par nuit
     @flats = @flats.where("price_by_night <= ?", params[:max_price]) if params[:max_price].present?
+
+    @markers = @flats.geocoded.map do |flat|
+      {
+        lat: flat.latitude,
+        lng: flat.longitude,
+        popup_html: render_to_string(partial: "popup", locals: { flat: flat })
+      }
+    end
   end
 
   def show
@@ -54,6 +62,6 @@ class FlatsController < ApplicationController
   end
 
   def flat_params
-    params.require(:flat).permit(:name, :description, :address, :price_by_night, :capacity, :user_id)
+    params.require(:flat).permit(:name, :description, :address, :price_by_night, :capacity, :user_id, :photo)
   end
 end

@@ -1,25 +1,55 @@
-<h1>Logements</h1>
-
-<%= form_with url: flats_path, method: :get do |f| %>
-  <%= f.text_field :query, value: params[:query], placeholder: "Nom ou ville" %>
-  <%= f.number_field :capacity, value: params[:capacity], placeholder: "Capacité min." %>
-  <%= f.number_field :max_price, value: params[:max_price], placeholder: "Prix max / nuit" %>
-  <%= f.submit "Rechercher" %>
-  <%= link_to "Réinitialiser", flats_path %>
+<h1 class="mb-4">Logements</h1>
+<%= form_with url: flats_path, method: :get, class: "row g-2 align-items-end mb-4" do |f| %>
+  <div class="col-md-5">
+    <%= f.label :query, "Recherche", class: "form-label" %>
+    <%= f.text_field :query, value: params[:query], placeholder: "Nom ou ville", class: "form-control" %>
+  </div>
+  <div class="col-md-2">
+    <%= f.label :capacity, "Capacité min.", class: "form-label" %>
+    <%= f.number_field :capacity, value: params[:capacity], class: "form-control" %>
+  </div>
+  <div class="col-md-2">
+    <%= f.label :max_price, "Prix max", class: "form-label" %>
+    <%= f.number_field :max_price, value: params[:max_price], class: "form-control" %>
+  </div>
+  <div class="col-md-3 d-flex gap-2">
+    <%= f.submit "Rechercher", class: "btn btn-primary" %>
+    <%= link_to "Réinitialiser", flats_path, class: "btn btn-outline-secondary" %>
+  </div>
 <% end %>
 
-<p><%= link_to "+ Ajouter un logement", new_flat_path %></p>
+<div
+  class="flats-map mb-4"
+  data-controller="map"
+  data-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
+  data-map-markers-value="<%= @markers.to_json %>">
+</div>
 
 <% if @flats.any? %>
-  <ul>
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     <% @flats.each do |flat| %>
-      <li>
-        <%= link_to flat.name, flat_path(flat) %>
-        — <%= flat.price_by_night %> €/nuit — <%= flat.capacity %> pers.
-        <br><small><%= flat.address %></small>
-      </li>
+      <div class="col">
+        <div class="card h-100 shadow-sm flat-card">
+          <% if flat.photo.attached? %>
+            <%= image_tag flat.photo, class: "card-img-top flat-card__img" %>
+          <% end %>
+          <div class="card-body">
+            <h5 class="card-title mb-1">
+              <%= link_to flat.name, flat_path(flat),
+                  class: "stretched-link text-decoration-none text-dark" %>
+            </h5>
+            <p class="text-muted small mb-2"><%= flat.address %></p>
+            <p class="mb-0">
+              <strong><%= flat.price_by_night %> €</strong>
+              <span class="text-muted">/ nuit · <%= flat.capacity %> pers.</span>
+            </p>
+          </div>
+        </div>
+      </div>
     <% end %>
-  </ul>
+  </div>
 <% else %>
-  <p>Aucun logement ne correspond à votre recherche.</p>
+  <div class="text-center text-muted py-5">
+    <p class="mb-0">Aucun logement ne correspond à votre recherche.</p>
+  </div>
 <% end %>

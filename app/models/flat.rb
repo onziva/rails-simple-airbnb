@@ -3,9 +3,9 @@ class Flat < ApplicationRecord
   has_many :bookings, dependent: :destroy
   has_many :reviews,  through: :bookings           # avis du logement
 
-  # has_many_attached :photos # ← à décommenter quand ActiveStorage sera installé
+  has_one_attached :photo
 
-  # geocoded_by :address
+  geocoded_by :address
   # after_validation :geocode, if: :will_save_change_to_address?
 
   validates :name, :description, :address, presence: true

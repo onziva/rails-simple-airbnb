@@ -1,0 +1,37 @@
+<p class="mb-3">
+  <%= link_to "← Toutes les réservations", bookings_path, class: "text-muted text-decoration-none" %>
+</p>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start mb-2">
+      <h1 class="h4 mb-0"><%= @booking.flat.name %></h1>
+      <% if @booking.end_date < Date.current %>
+        <span class="badge bg-secondary">Séjour terminé</span>
+      <% else %>
+        <span class="badge bg-success">À venir</span>
+      <% end %>
+    </div>
+    <p class="mb-1">Du <%= @booking.start_date.strftime("%d/%m/%Y") %> au <%= @booking.end_date.strftime("%d/%m/%Y") %></p>
+    <p class="mb-1">Voyageur : <%= @booking.user.full_name %></p>
+    <p class="mb-3">Total : <strong><%= @booking.total_price %> €</strong></p>
+
+    <%= link_to "Annuler la réservation", booking_path(@booking),
+          class: "btn btn-outline-danger btn-sm",
+          data: { turbo_method: :delete, turbo_confirm: "Annuler cette réservation ?" } %>
+  </div>
+</div>
+
+<h2 class="h5 mb-3">Avis</h2>
+<% if @booking.review.present? %>
+  <p class="text-warning mb-1"><%= "★" * @booking.review.rating %><span class="text-muted">/5</span></p>
+  <p><%= @booking.review.content %></p>
+<% elsif @booking.reviewable? %>
+  <%= simple_form_for [@booking, @review] do |f| %>
+    <%= f.input :rating,  label: "Note", collection: (1..5), prompt: "Choisir" %>
+    <%= f.input :content, label: "Commentaire" %>
+    <%= f.button :submit, "Publier mon avis", class: "btn btn-primary" %>
+  <% end %>
+<% else %>
+  <p class="text-muted">Vous pourrez laisser un avis une fois le séjour terminé.</p>
+<% end %>

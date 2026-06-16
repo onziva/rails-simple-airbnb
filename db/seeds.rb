@@ -1,10 +1,5 @@
-# # db/seeds.rb
-# Première version : jeu de données minimal.
-# Sans photos (ActiveStorage) ni géocodage automatique : les coordonnées
-# sont renseignées à la main (geocoder sera branché plus tard).
-#
-# /!\ Tant que geocoder n'est pas installé, garde le callback `geocode`
-#     COMMENTÉ dans le modèle Flat, sinon ce fichier plantera au premier flat.
+require "open-uri"
+
 
 puts "Nettoyage de la base (enfants -> parents)..."
 Review.destroy_all
@@ -25,8 +20,6 @@ studio = Flat.create!(
   address: "10 rue de Strasbourg, 44000 Nantes",
   price_by_night: 55,
   capacity: 2,
-  latitude: 47.2173,
-  longitude: -1.5534,
   user: alice                       # Alice est l'hôte
 )
 
@@ -36,8 +29,6 @@ loft = Flat.create!(
   address: "5 quai des Antilles, 44200 Nantes",
   price_by_night: 110,
   capacity: 4,
-  latitude: 47.2048,
-  longitude: -1.5658,
   user: alice
 )
 
@@ -47,10 +38,23 @@ maison = Flat.create!(
   address: "12 avenue de l'Océan, 44500 La Baule",
   price_by_night: 180,
   capacity: 6,
-  latitude: 47.2861,
-  longitude: -2.3920,
   user: bob
 )
+
+flats_photos = {
+  studio => "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
+  loft   => "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
+  maison => "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800"
+}
+
+flats_photos.each do |flat, url|
+  flat.photo.attach(
+    io: URI.open(url, "User-Agent" => "Ruby"),
+    filename: "#{flat.name.parameterize}.jpg",
+    content_type: "image/jpeg"
+  )
+end
+
 
 puts "Création des réservations..."
 # total_price calculé depuis le nombre de nuits ; end_date = start_date + nuits

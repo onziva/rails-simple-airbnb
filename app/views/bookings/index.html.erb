@@ -1,0 +1,29 @@
+<h1 class="mb-4">Réservations</h1>
+
+<% if @bookings.any? %>
+  <div class="list-group">
+    <% @bookings.each do |booking| %>
+      <%= link_to booking_path(booking),
+            class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do %>
+        <span>
+          <strong><%= booking.flat.name %></strong><br>
+          <span class="text-muted small">
+            du <%= booking.start_date.strftime("%d/%m/%Y") %>
+            au <%= booking.end_date.strftime("%d/%m/%Y") %>
+            · <%= booking.user.full_name %>
+          </span>
+        </span>
+        <span>
+          <span class="fw-bold me-2"><%= booking.total_price %> €</span>
+          <% if booking.end_date < Date.current %>
+            <span class="badge bg-secondary">Terminé</span>
+          <% else %>
+            <span class="badge bg-success">À venir</span>
+          <% end %>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-muted">Aucune réservation pour le moment.</p>
+<% end %>

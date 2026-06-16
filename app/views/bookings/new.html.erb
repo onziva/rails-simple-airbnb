@@ -1,0 +1,10 @@
+<p><%= link_to "Retour au logement", flat_path(@flat) %></p>
+<h1>Réserver : <%= @flat.name %></h1>
+<p><%= @flat.price_by_night %> €/nuit · jusqu'à <%= @flat.capacity %> voyageurs</p>
+
+<%= simple_form_for [@flat, @booking] do |f| %>
+  <%= f.input :start_date, label: "Arrivée", as: :date, html5: true %>
+  <%= f.input :end_date,   label: "Départ",  as: :date, html5: true %>
+  <%= f.association :user, label: "Voyageur", label_method: :full_name, prompt: "Choisir un voyageur" %>
+  <%= f.button :submit, "Réserver", class: "btn btn-primary" %>
+<% end %>

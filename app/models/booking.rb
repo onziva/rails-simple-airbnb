@@ -7,6 +7,10 @@ class Booking < ApplicationRecord
   validates :start_date, :end_date, presence: true
   validate :end_after_start
 
+  def reviewable?
+    end_date.present? && end_date < Date.current && review.nil?
+  end
+
 private
   def end_after_start
     return if start_date.blank? || end_date.blank?
